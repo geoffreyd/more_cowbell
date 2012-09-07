@@ -3,7 +3,7 @@
 // Copyright: ©2011 Erich Atlas Ocean.
 // License:   Licensed under an MIT license (see license.js).
 // ==========================================================================
-/*global EO */
+/*global GD */
 
 /** @static
   
@@ -11,7 +11,7 @@
   
   @author Erich Ocean
 */
-EO.TargetAction = {
+GD.TargetAction = {
   
   /**
     The name of the action you want triggered when performAction() is called.  

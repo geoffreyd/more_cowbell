@@ -3,10 +3,10 @@
 // Copyright: ©2011 Erich Atlas Ocean.
 // License:   Licensed under an MIT license (see license.js).
 // ==========================================================================
-/*global EO */
+/*global GD */
 
 /** @namespace
 
-  More Cowbell is in the EO namespace.
+  More Cowbell is in the GD namespace.
 */
-window.EO = window.EO || {};
+window.GD = window.GD || {};
