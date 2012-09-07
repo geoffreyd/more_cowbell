@@ -12,9 +12,14 @@
  Desired result:
 
   {
-    "sc_version": 2,
-    "sc_types": ["Foo", "Bar"],
-    // TODO: Should we include Namespace information as well?
+    "sc_version": 3,
+    "types": ["Foo", "Bar"],
+    "attributes": {
+      "<primaryKey>": {
+        // attributes hash keys and values
+      }
+      // ... more attribute hashes for records of any type
+    }
     "Foo": {
       "created": [
         "<primaryKey>"
@@ -27,13 +32,7 @@
       "deleted": [
         "<primaryKey"
         // ...more deleted record ids of type "Foo"
-      ],
-      "attributes": {
-        "<primaryKey>": {
-          // attributes hash keys and values
-        }
-        // ... more attribute hashes for records of type "Foo"
-      }
+      ]
     },
     "Bar": {
       "created": [
@@ -47,13 +46,7 @@
       "deleted": [
         "<primaryKey"
         // ...more deleted record ids of type "Bar"
-      ],
-      "attributes": {
-        "<primaryKey>": {
-          // attributes hash keys and values
-        }
-        // ... more attribute hashes for records of type "Bar"
-      }
+      ]
     }
   }
 */
@@ -107,25 +100,25 @@ SC.NestedStore.prototype.computeChangeset = function() {
 
 SC.Store.prototype.applyChangeset = function(changeset, namespace) {
   var store = this,
-  recordTypes = changeset['sc_types'],
-  recordType, typeChanges, datahases;
+  recordTypes = changeset['types'],
+  recordType, typeChanges, datahashes;
+  datahashes = changeset['attributes'];
 
   recordTypes.forEach(function(recordTypeName) {
     recordType = SC.objectForPropertyPath(namespace + '.' + recordTypeName);
     typeChanges = changeset[recordTypeName];
     if (!recordType) throw "Can't find object " + namespace + '.' + recordTypeName;
-    datahases = typeChanges['attributes'];
 
     // loop over created and updated items and insert into store
-    typeChanges['created'].forEach(function(id) {
-      store.pushRetrieve(recordType, id, datahases[id]);
+    (typeChanges['created'] || []).forEach(function(id) {
+      store.pushRetrieve(recordType, id, datahashes[id]);
     });
     // TODO: merge what is already here, incase we are only given a diff
-    typeChanges['updated'].forEach(function(id) {
-      store.pushRetrieve(recordType, id, datahases[id]);
+    (typeChanges['updated'] || []).forEach(function(id) {
+      store.pushRetrieve(recordType, id, datahashes[id]);
     });
     // Now Delete any records that have been deleted
-    typeChanges['deleted'].forEach(function(id) {
+    (typeChanges['deleted'] || []).forEach(function(id) {
       store.pushDestroy(recordType, id);
     });
 
